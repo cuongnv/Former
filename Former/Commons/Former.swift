@@ -731,8 +731,8 @@ public final class Former: NSObject {
         tableView?.delegate = self
         tableView?.dataSource = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(Former.keyboardWillAppear(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(Former.keyboardWillDisappear(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Former.keyboardWillAppear(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Former.keyboardWillDisappear(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     fileprivate func removeCurrentInlineRow() -> IndexPath? {
@@ -821,7 +821,7 @@ public final class Former: NSObject {
         
         if case let (tableView?, cell?) = (tableView, findCellWithSubView(findFirstResponder(tableView))) {
             
-            let frame = (keyboardInfo[UIResponder.keyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
+            let frame = (keyboardInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
             let keyboardFrame = tableView.window!.convert(frame!, to: tableView.superview!)
             let bottomInset = tableView.frame.minY + tableView.frame.height - keyboardFrame.minY
             guard bottomInset > 0 else { return }
@@ -829,8 +829,8 @@ public final class Former: NSObject {
             if oldBottomContentInset == nil {
                 oldBottomContentInset = tableView.contentInset.bottom
             }
-            let duration = (keyboardInfo[UIResponder.keyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue!
-            let curve = (keyboardInfo[UIResponder.keyboardAnimationCurveUserInfoKey]! as AnyObject).integerValue!
+            let duration = (keyboardInfo[UIKeyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue!
+            let curve = (keyboardInfo[UIKeyboardAnimationCurveUserInfoKey]! as AnyObject).integerValue!
             guard let indexPath = tableView.indexPath(for: cell) else { return }
             
             UIView.beginAnimations(nil, context: nil)
@@ -847,8 +847,8 @@ public final class Former: NSObject {
         guard let keyboardInfo = notification.userInfo else { return }
         
         if case let (tableView?, inset?) = (tableView, oldBottomContentInset) {
-            let duration = (keyboardInfo[UIResponder.keyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue!
-            let curve = (keyboardInfo[UIResponder.keyboardAnimationCurveUserInfoKey]! as AnyObject).integerValue!
+            let duration = (keyboardInfo[UIKeyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue!
+            let curve = (keyboardInfo[UIKeyboardAnimationCurveUserInfoKey]! as AnyObject).integerValue!
 
             UIView.beginAnimations(nil, context: nil)
             UIView.setAnimationDuration(duration)
